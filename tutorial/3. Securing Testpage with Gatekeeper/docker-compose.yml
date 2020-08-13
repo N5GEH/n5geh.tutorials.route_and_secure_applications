@@ -1,0 +1,53 @@
+version: "3.7"
+
+services:
+  traefik:
+    image: "traefik:v2.2"
+    hostname: traefik
+    container_name: traefik
+    restart: always
+    networks:
+      - transit_demo
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./acme.json:/acme.json
+      - ./traefik.yml:/etc/traefik/traefik.yml
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.mydomain.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.tls.certresolver=le"
+
+  testpage:
+    image: crccheck/hello-world
+    container_name: testpage
+    hostname: testpage
+    networks:
+      - transit_demo
+    labels:
+      - "traefik.enable=false" #redundant
+
+  gatekeeper_testpage:
+      image: keycloak/keycloak-gatekeeper:7.0.0
+      hostname: gatekeeper_testpage
+      restart: always
+      container_name: gatekeeper_testpage
+      networks:
+        - transit_demo
+      volumes:
+        - ./keycloak-gatekeeper.conf:/etc/keycloak-gatekeeper.conf   
+      entrypoint:
+        - /opt/keycloak-gatekeeper
+        - --config=/etc/keycloak-gatekeeper.conf
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.auth.rule=Host(`testpage.mydomain.com`)"
+        - "traefik.http.routers.auth.tls.certresolver=le"
+        - "traefik.http.services.auth.loadbalancer.server.port=3030"
+
+
+networks:
+  transit_demo:

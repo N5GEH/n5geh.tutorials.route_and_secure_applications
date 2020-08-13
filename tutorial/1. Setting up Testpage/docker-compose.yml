@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  testpage:
+    image: crccheck/hello-world
+    container_name: testpage
+    hostname: testpage
+    ports:
+       - 8080:8000
+

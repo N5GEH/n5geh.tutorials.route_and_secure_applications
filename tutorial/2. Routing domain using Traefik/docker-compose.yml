@@ -1,0 +1,32 @@
+version: "3.7"
+
+services:
+  traefik:
+    image: "traefik:v2.2"
+    networks:
+      - transit_demo
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./acme.json:/acme.json
+      - ./traefik.yml:/etc/traefik/traefik.yml
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.mydomain.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.traefik.service=api@internal" #traefik internal to make dashboard and api running
+      - "traefik.http.routers.traefik.tls.certresolver=le"
+
+
+  testpage:
+    image: crccheck/hello-world
+    networks:
+      - transit_demo
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.testpage.rule=Host(`testpage.mydomain.com`)"
+      - "traefik.http.routers.testpage.tls.certresolver=le"
+      
+networks:
+  transit_demo:
