@@ -243,4 +243,8 @@ You can create and test different authorization rules by using the following use
 * E-Mail: normal@other-acme.com
 
 
+# License
+License: MIT Copyright (c) 2020 N5GEH
 
+# Acknowledgement
+The project is funded by the German Federal Ministry of Economics and Energy and is part of the federal government’s digitalization strategy. 
