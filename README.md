@@ -247,4 +247,6 @@ You can create and test different authorization rules by using the following use
 License: MIT Copyright (c) 2020 N5GEH
 
 # Acknowledgement
-The project is funded by the German Federal Ministry of Economics and Energy and is part of the federal government’s digitalization strategy. 
+<img src="https://www.ebc.eonerc.rwth-aachen.de/global/show_picture.asp?mod=w%3d474%26h%3d%26gray%3d%26neg%3d%26mirror%3d%26flip%3d%26rleft%3d%26rright%3d%26r180%3d%26crop%3d%26id%3daaaaaaaaaayxgwf&id=aaaaaaaaaayxgwf" width="250">
+
+We gratefully acknowledge the financial support provided by the BMWi (Federal Ministry for Economic Affairs and Energy), promotional reference 03ET1561A/B/C
