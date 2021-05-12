@@ -24,14 +24,14 @@ The compose file shows that a service called "testpage” will be created. The p
 
 *Step 1.2:* The web application can be started using the command *docker-compose up -d*. You can check whether everything is configured correctly and lookup *http://localhost:8080* in your browser. You should see the screen below.
 
-![Localhot Web App](tutorial/1. Setting up Testpage/images/localhost.png)
+[Localhost Web App](tutorial/1.%20Setting%20up%20Testpage/images/localhost.png)
 
 
 ### Step 2: Routing to your web application using the traefik reverse proxy.
 
 Usually, you don't want your service to run directly behind an open port. This is why, in this section, we configure the traefik reverse proxy to listen for HTTP and HTTPS requests on a certain domain to route these requests to our application internally.
 
-*Step 2.1:* To make sure all the requests are TLS encrypted we use a redirection of traefik's entrypoints from port 80 (http) to 443 (https) in traefik's static configuration in the [yml](tutorial/2. Routing domain using Traefik/traefik.yml) file. To make traefik work with SSL certificates, we need to configure a certificate-resolver, which we call "le". For demo purposes we use a Let's Encrypt ca-server. Please mind that the acme.json has to be created before running docker-compose to ensure proper access:
+*Step 2.1:* To make sure all the requests are TLS encrypted we use a redirection of traefik's entrypoints from port 80 (http) to 443 (https) in traefik's static configuration in the [yml](tutorial/2.%20Routing%20domain%20using%20Traefik/traefik.yml) file. To make traefik work with SSL certificates, we need to configure a certificate-resolver, which we call "le". For demo purposes we use a Let's Encrypt ca-server. Please mind that the acme.json has to be created before running docker-compose to ensure proper access:
 
 `$ touch acme.json` 
 
@@ -59,7 +59,7 @@ certificatesResolvers:
 
 The traefik container will listen on ports 80 and 443, redirect all http trafic on port 80 to port 443 and tls-challenge it. 
 
-Now the container ports have to be mapped to the host ports in the [docker-compose.yml](tutorial/2. Routing domain using Traefik/docker-compose.yml).
+Now the container ports have to be mapped to the host ports in the [docker-compose.yml](tutorial/2.%20Routing%20domain%20using%20Traefik/docker-compose.yml).
 
 ```yaml
 services:
@@ -116,15 +116,15 @@ In the compose file you can see the rest of the configuration for the traefik se
 
 *Step 2.4:* Open the browser and check whether we configured everything correctly. Try to reach the testpage via polling *testpage.mydomain.com* and traefik's dashboard via *traefik.mydomain.com/dashboard/*.
 
-![Traefik Admin](tutorial/2. Routing domain using Traefik/images/traefik.png)
+![Traefik Admin](tutorial/2.%20Routing%20domain%20using%20Traefik/images/traefik.png)
 
-![Domain Web App](tutorial/2. Routing domain using Traefik/images/app.png)
+![Domain Web App](tutorial/2.%20Routing%20domain%20using%20Traefik/images/app.png)
 
 ### Step 3: Securing the Testpage using Gatekeeper.
 
 In this section, [keycloak](https://www.keycloak.org/docs/latest/securing_apps/) [gatekeeper](https://www.keycloak.org/docs/latest/securing_apps/#_keycloak_generic_adapter) is used to secure the webpage. To achieve this we can authenticate users by challenging them with a login page and checking whether the user is known by our identity management (e.g. Keycloak). Any user properly registered in our identity management will be granted access that way. Of course if you want to protect a resource (our webpage) you might want to restrict access only to some special users. To do so we use authorization, which will determine whether the user is allowed to access our resource. So authentication and authorization are closely related but very different concepts. In short: Authentication verifies the identity of a user (most commonly by asking for a username and a password) and authorization is used to determine what the user is allowed to do after authentication is done. In this example Gatekeeper will take care of both aspects for us.
 
-*Step 3.1:* First we need to include a gatekeeper service, which we call "gatekeeper_testpage" in the [docker-compose.yml](tutorial/3. Securing Testpage with Gatekeeper/docker-compose.yml) file. We add the official keycloak-gatekeeper image v7.0.0.
+*Step 3.1:* First we need to include a gatekeeper service, which we call "gatekeeper_testpage" in the [docker-compose.yml](tutorial/3.%20Securing%20Testpage%20with%20Gatekeeper/docker-compose.yml) file. We add the official keycloak-gatekeeper image v7.0.0.
 
 ```yaml
 services:
@@ -135,7 +135,7 @@ services:
       - ./keycloak-gatekeeper.conf:/etc/keycloak-gatekeeper.conf
 ```
 
-Gatekeeper is configured via the mounted [keycloak-gatekeeper.conf](tutorial/3. Securing Testpage with Gatekeeper/keycloak-gatekeeper.conf). Below you can find some snippets from that file. Please refer to the documentation for indepth information: [Keycloak Gatekeeper](https://www.keycloak.org/docs/latest/securing_apps/#_keycloak_generic_adapter)
+Gatekeeper is configured via the mounted [keycloak-gatekeeper.conf](tutorial/3.%20Securing%20Testpage%20with%20Gatekeeper/keycloak-gatekeeper.conf). Below you can find some snippets from that file. Please refer to the documentation for indepth information: [Keycloak Gatekeeper](https://www.keycloak.org/docs/latest/securing_apps/#_keycloak_generic_adapter)
 
 ```yaml
 discovery-url: https://auth.n5geh.de/auth/realms/demo-realm
@@ -211,18 +211,18 @@ We disabled traefik and deleted the host rule for the *testpage* service since w
 
 Please mind that Gatekeeper can only have one upstream-URL. Additionally Gatekeeper has to be labeled to the domains root-path to work properly. **As a result you can't have multiple applications running in different docker-containers on different sub-paths of one domain!** You should consider using sub-domains for different applications when using Gatekeeper. 
 
-*Step 5.1:* After everything has been configured run `$ docker-compose up -d`. The complete docker-compose file for securing the Testpage service using Gatekeeper can be found here [docker-compose.yml](tutorial/3. Securing Testpage with Gatekeeper/docker-compose.yml) for comparison.
+*Step 5.1:* After everything has been configured run `$ docker-compose up -d`. The complete docker-compose file for securing the Testpage service using Gatekeeper can be found here [docker-compose.yml](tutorial/3.%20Securing%20Testpage%20with%20Gatekeeper/docker-compose.yml) for comparison.
 
 *Step 5.2* Open the browser and try to access "testpage.mydomain.com", you can see that now gatekeeper redirects you to authentication page as shown below.
 
-![Gatekeeper Login](tutorial/3. Securing Testpage with Gatekeeper/images/gatekeeper.png)
+![Gatekeeper Login](tutorial/3.%20Securing%20Testpage%20with%20Gatekeeper/images/gatekeeper.png)
 
 The demo credentials are   
 username: demo-user  
 pw: demo1  
 After logging in successfully, the page is redirected back to redirect-url mentioned in the keycloak-gatekeeper.conf file. The traffic though is routed to the upstream-url!
 
-![Successful Login](tutorial/3. Securing Testpage with Gatekeeper/images/app.png)
+![Successful Login](tutorial/3.%20Securing%20Testpage%20with%20Gatekeeper/images/app.png)
 
 
 
