@@ -24,7 +24,7 @@ The compose file shows that a service called "testpage” will be created. The p
 
 *Step 1.2:* The web application can be started using the command *docker-compose up -d*. You can check whether everything is configured correctly and lookup *http://localhost:8080* in your browser. You should see the screen below.
 
-[Localhost Web App](tutorial/1.%20Setting%20up%20Testpage/images/localhost.png)
+![Localhost Web App](tutorial/1.%20Setting%20up%20Testpage/images/localhost.png)
 
 
 ### Step 2: Routing to your web application using the traefik reverse proxy.
