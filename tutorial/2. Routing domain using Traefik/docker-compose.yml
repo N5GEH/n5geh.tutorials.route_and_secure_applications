@@ -1,8 +1,8 @@
-version: "3.7"
+version: "3.8"
 
 services:
   traefik:
-    image: "traefik:v2.2"
+    image: "traefik:v2.5"
     networks:
       - transit_demo
     ports:
@@ -18,7 +18,6 @@ services:
       - "traefik.http.routers.traefik.service=api@internal" #traefik internal to make dashboard and api running
       - "traefik.http.routers.traefik.tls.certresolver=le"
 
-
   testpage:
     image: crccheck/hello-world
     networks:
@@ -27,6 +26,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.testpage.rule=Host(`testpage.mydomain.com`)"
       - "traefik.http.routers.testpage.tls.certresolver=le"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8000"
       
 networks:
   transit_demo:

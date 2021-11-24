@@ -2,16 +2,16 @@
 
 ### Install
 
-This tutorial uses [Docker Engine](https://docs.docker.com/engine/install/) version "19.03.8" containerization, [docker-compose](https://docs.docker.com/compose/) "3.7" and [traefik](https://docs.traefik.io/) "v2.2" as a reverse proxy on an Ubuntu 18.x machine.
+This tutorial uses [Docker Engine](https://docs.docker.com/engine/install/) version "20.10.6" containerization, [docker-compose](https://docs.docker.com/compose/) "3.8" and [traefik](https://docs.traefik.io/) "v2.5" as a reverse proxy on an Ubuntu 21.xx machine.
 
 ### Step 1: Starting a web application via docker-compose.
 
 In this section, we start a docker image to deploy a simple web application, which will become our protected resource. 
 
-*Step 1.1:* The image is run via docker-compose using a compose file. The composition is shown below, the file can be found [here](tutorial/1.%20Setting%20up%20Testpage/docker-compose.yml).
+*Step 1.1* : The image is run via docker-compose using a compose file. The composition is shown below, the file can be found [here](tutorial/1.%20Setting%20up%20Testpage/docker-compose.yml).
 
 ```yaml
-version: '3.7'
+version: '3.8'
 services:
   testpage:
     image: crccheck/hello-world
@@ -22,7 +22,7 @@ services:
 ```
 The compose file shows that a service called "testpage” will be created. The ports are configured in the *host:container* format. Our application and the container respectively are configured to listen on port 8000. We map this port to the host port 8080.
 
-*Step 1.2:* The web application can be started using the command *docker-compose up -d*. You can check whether everything is configured correctly and lookup *http://localhost:8080* in your browser. You should see the screen below.
+*Step 1.2* : The web application can be started using the command *docker-compose up -d*. You can check whether everything is configured correctly and lookup *http://localhost:8080* in your browser. You should see the screen below.
 
 ![Localhost Web App](tutorial/1.%20Setting%20up%20Testpage/images/localhost.png)
 
@@ -31,7 +31,7 @@ The compose file shows that a service called "testpage” will be created. The p
 
 Usually, you don't want your service to run directly behind an open port. This is why, in this section, we configure the traefik reverse proxy to listen for HTTP and HTTPS requests on a certain domain to route these requests to our application internally.
 
-*Step 2.1:* To make sure all the requests are TLS encrypted we use a redirection of traefik's entrypoints from port 80 (http) to 443 (https) in traefik's static configuration in the [yml](tutorial/2.%20Routing%20domain%20using%20Traefik/traefik.yml) file. To make traefik work with SSL certificates, we need to configure a certificate-resolver, which we call "le". For demo purposes we use a Let's Encrypt ca-server. Please mind that the acme.json has to be created before running docker-compose to ensure proper access:
+*Step 2.1:* To make sure all the requests are TLS encrypted we use a redirection of traefik's entrypoints from port 80 (http) to 443 (https) in traefik's static configuration in the [traefik.yml](tutorial/2.%20Routing%20domain%20using%20Traefik/traefik.yml) file. To make traefik work with SSL certificates, we need to configure a certificate-resolver, which we call "le". For demo purposes we use a Let's Encrypt ca-server. Please mind that the acme.json has to be created before running docker-compose to ensure proper access:
 
 `$ touch acme.json` 
 
@@ -84,8 +84,7 @@ services:
      - "traefik.http.routers.testpage.rule=Host(`testpage.mydomain.com`)"
 ```
 
-This way, the traefik service knows that all requests to *testpage.mydomain.com* are rerouted to the testpage service. Since we disabled the *exposedByDefault* option in the yml file we have to tell traefik that it has to watch this service and its labels with an additional label:
-You see that no port binding is needed anymore. The only open ports are 80 and 443 which are bound to traefik.
+This way, the traefik service knows that all requests to *testpage.mydomain.com* are rerouted to the testpage service. Since we disabled the *exposedByDefault* option in the yml file we have to tell traefik that it has to watch this service and its labels with an additional label. The only open ports are 80 and 443 which are bound to traefik.
 
 ```yaml
 services:
@@ -124,13 +123,14 @@ In the compose file you can see the rest of the configuration for the traefik se
 
 In this section, [keycloak](https://www.keycloak.org/docs/latest/securing_apps/) [gatekeeper](https://www.keycloak.org/docs/latest/securing_apps/#_keycloak_generic_adapter) is used to secure the webpage. To achieve this we can authenticate users by challenging them with a login page and checking whether the user is known by our identity management (e.g. Keycloak). Any user properly registered in our identity management will be granted access that way. Of course if you want to protect a resource (our webpage) you might want to restrict access only to some special users. To do so we use authorization, which will determine whether the user is allowed to access our resource. So authentication and authorization are closely related but very different concepts. In short: Authentication verifies the identity of a user (most commonly by asking for a username and a password) and authorization is used to determine what the user is allowed to do after authentication is done. In this example Gatekeeper will take care of both aspects for us.
 
-*Step 3.1:* First we need to include a gatekeeper service, which we call "gatekeeper_testpage" in the [docker-compose.yml](tutorial/3.%20Securing%20Testpage%20with%20Gatekeeper/docker-compose.yml) file. We add the official keycloak-gatekeeper image v7.0.0.
+*Step 3.1* : First we need to include a gatekeeper service, which we call "gatekeeper_testpage" in the [docker-compose.yml](tutorial/3.%20Securing%20Testpage%20with%20Gatekeeper/docker-compose.yml) file. We add the official keycloak-gatekeeper image v7.0.0.
 
 ```yaml
 services:
 ...
   gatekeeper_testpage: 
-    image: keycloak/keycloak-gatekeeper:7.0.0
+    image: quay.io/gogatekeeper/gatekeeper:1.3.7
+    ...
     volumes:
       - ./keycloak-gatekeeper.conf:/etc/keycloak-gatekeeper.conf
 ```
