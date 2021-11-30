@@ -2,11 +2,11 @@
 
 ### Install
 
-This tutorial uses [Docker Engine](https://docs.docker.com/engine/install/) version "20.10.6" containerization, [docker-compose](https://docs.docker.com/compose/) "3.8" and [traefik](https://docs.traefik.io/) "v2.5" as a reverse proxy on an Ubuntu 21.xx machine.
+In this tutorial, we use [Docker Engine](https://docs.docker.com/engine/install/) version "20.10.6", [docker-compose](https://docs.docker.com/compose/) "3.8" and [traefik](https://docs.traefik.io/) "v2.5" as a reverse proxy on an Ubuntu 21.xx machine.
 
 ### Step 1: Starting a web application via docker-compose.
 
-In this section, we start a docker image to deploy a simple web application, which will become our protected resource. 
+In this section, we run a docker image to deploy a simple web application, which will later become our protected resource. 
 
 *Step 1.1* : The image is run via docker-compose using a compose file. The composition is shown below, the file can be found [here](tutorial/1.%20Setting%20up%20Testpage/docker-compose.yml).
 
@@ -74,7 +74,7 @@ If no SSL certificates are given to traefik it will create default (and at first
 
 *Step 2.2:* Configure the testpage service.
 
-Traefik uses labels for its dynamic configuration with docker. We want the testpage service to listen to requests to the domain *testpage.mydomain.com* where mydomain.com represents your domain and testpage is the custom subdomain for our webpage.
+Traefik uses labels for its dynamic configuration with docker. We want the testpage service to listen to requests on the domain *testpage.mydomain.com* where mydomain.com represents your domain and testpage is the custom subdomain for our webpage.
 
 ```yaml
 services:
@@ -84,7 +84,7 @@ services:
      - "traefik.http.routers.testpage.rule=Host(`testpage.mydomain.com`)"
 ```
 
-This way, the traefik service knows that all requests to *testpage.mydomain.com* are rerouted to the testpage service. Since we disabled the *exposedByDefault* option in the yml file we have to tell traefik that it has to watch this service and its labels with an additional label. The only open ports are 80 and 443 which are bound to traefik.
+This way, the traefik service knows that all requests to *testpage.mydomain.com* have to be rerouted to the testpage service. Since we disabled the *exposedByDefault* option in the yml file we have to tell traefik that it has to watch this service and its labels with an additional label. The only open ports are 80 and 443 which are bound to traefik.
 
 ```yaml
 services:
